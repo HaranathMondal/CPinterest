@@ -1,0 +1,17 @@
+<% include ./partials/header.ejs %>
+<div class="w-full min-h-screen bg-zinc-800 px-10 py-8 text-white">
+    <div class="cards flex flex-wrap gap-10">
+        <% posts.forEach(function(elem){ %>
+            <div class="card w-44">
+                <div class="w-full h-full overflow-hidden">
+                    <!-- Use Cloudinary URL for the image -->
+                    <img class="rounded-lg" src="<%= elem.image %>" alt="<%= elem.title %>">
+                    <h5 class="text-xs opacity-500">@<%= elem.user.username %></h5>
+                    <h5 class="mt-1 text-sm font-semibold"><%= elem.title %></h5>
+                    <h5 class="mt-2 text-sm"><%= elem.description %></h5>
+                </div>
+            </div>
+       <% }) %>
+    </div>
+</div>
+<% include ./partials/footer.ejs %>
