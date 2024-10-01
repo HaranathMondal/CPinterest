@@ -1,4 +1,4 @@
-<% include ./partials/header.ejs %>
+<%- include('partials/header') %>
 <div class="profile w-full min-h-screen bg-zinc-800 text-white pt-1">
     <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
         <input type="file" name="image">
@@ -11,8 +11,8 @@
                 <i class="text-zinc-800 ri-pencil-fill"></i>
             </span>
             <div class="w-40 h-40 bg-zinc-200 rounded-full overflow-hidden">
-                <!-- Use Cloudinary URL for profile image -->
-                <img class="w-30 h-30 object-cover" src="<%= user.profileImage %>" alt="<%= user.username %>">
+                <!-- Use Cloudinary URL instead of local path for profile image -->
+                <img class="w-30 h-30 object-cover" src="<%= user.profileImage %>" alt="">
             </div>
         </div>
 
@@ -26,8 +26,8 @@
             <div class="card">
                 <% if (user.posts && user.posts.length > 0) { %>
                     <div class="w-52 h-40 bg-zinc-200 rounded-lg overflow-hidden">
-                        <!-- Use Cloudinary URL for the latest post's image -->
-                        <img class="w-full h-full object-cover" src="<%= user.posts[user.posts.length - 1].image %>" alt="Your latest post">
+                        <!-- Use Cloudinary URL instead of local path for post image -->
+                        <img class="w-full h-full object-cover" src="<%= user.posts[user.posts.length - 1].image %>" alt="Post Image">
                     </div>
                     <h3 class="text-xl font-semibold mt-3">Your Pins</h3>
                     <h5 class="text-sm font-semibold opacity-60">
@@ -35,7 +35,7 @@
                     </h5>
                 <% } else { %>
                     <div class="w-52 h-40 bg-zinc-200 rounded-lg overflow-hidden">
-                        <img class="w-full h-full object-cover" src=" " alt="No posts available">
+                        <!-- <img class="w-full h-full object-cover" src="" alt="No posts available"> -->
                     </div>
                     <h3 class="text-xl font-semibold mt-3">No posts available.</h3>
                 <% } %>
@@ -53,4 +53,4 @@
     })
 </script>
 
-<% include ./partials/footer.ejs %>
+<%- include('partials/footer') %>
