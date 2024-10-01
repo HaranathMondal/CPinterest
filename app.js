@@ -5,26 +5,46 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const expressSession = require("express-session")
+const expressSession = require("express-session");
+const MongoStore = require('connect-mongo');
+const mongoose = require('mongoose');
+const passport = require('passport');
 
+// Connect to MongoDB
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const passport = require('passport');
 
 var app = express();
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-
+// Session setup with MongoDB store
 app.use(expressSession({
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
-  secret: process.env.SECRET
-}))
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE,
+    collectionName: 'sessions', // Optional, change if needed
+    ttl: 3 * 30 * 24 * 60 * 60,  // Session expiration in seconds (3 months)
+    // ttl: 14 * 24 * 60 * 60, // Session expiration in seconds (14 days)
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    maxAge: 1000 * 60 * 60 * 24 * 14 // 14 days
+  }
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,11 +67,9 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
